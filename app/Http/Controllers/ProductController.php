@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 //import directory Storage
 use Illuminate\Support\Facades\Storage;
+use PDF;
 
 class ProductController extends Controller
 {
@@ -137,5 +138,32 @@ class ProductController extends Controller
 
         return redirect()->route('products.index')->with(['success' => 'Data Berhasil Dihapus!']);
 
+    }
+
+    public function productPDF()
+    {
+
+        $products = Product::get();
+        $data = [
+            'title' => 'Data Product - Latihan Praktikum Web',
+            'date' => date('m/d/Y'),
+            'products' => $products
+
+        ];
+        $pdf = PDF::loadview('products.productpdf',$data);
+        $pdf->setPaper('A4','landscape');
+        return $pdf->stream('Data Product.pdf',array("attachment"=>false));
+    }
+
+    public function productExcel()
+    {
+        $products = Product::get();
+        $data = [
+            'title' => 'Data Product - Latihan Praktikum Web',
+            'date' => date('m/d/Y'),
+            'products' => $products
+
+        ];
+        return view('products.productexcel',$data);
     }
 }

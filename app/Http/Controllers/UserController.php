@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 //import return type view
 use Illuminate\View\View;
+use PDF;
 
 class UserController extends Controller
 {
@@ -68,5 +69,32 @@ class UserController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function printPDF()
+    {
+
+        $users = User::get();
+        $data = [
+            'title' => 'Welcome To fti.uniska-bjm.ac.id',
+            'date' => date('m/d/Y'),
+            'users' => $users
+
+        ];
+        $pdf = PDF::loadview('mypdf',$data);
+        $pdf->setPaper('A4','landscape');
+        return $pdf->stream('Data User.pdf',array("attachment"=>false));
+    }
+
+    public function userExcel()
+    {
+        $users = User::get();
+        $data = [
+            'title' => 'Welcome To fti.uniska-bjm.ac.id',
+            'date' => date('m/d/Y'),
+            'users' => $users
+
+        ];
+        return view('userexcel',$data);
     }
 }

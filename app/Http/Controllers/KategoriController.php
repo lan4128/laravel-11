@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 //import directory Storage
 use Illuminate\Support\Facades\Storage;
+use PDF;
 
 class KategoriController extends Controller
 {
@@ -100,5 +101,32 @@ class KategoriController extends Controller
 
         return redirect()->route('kategoris.index')->with(['success' => 'Data Berhasil Dihapus!']);
 
+    }
+
+    public function kategoriPDF()
+    {
+
+        $kategoris = Kategori::get();
+        $data = [
+            'title' => 'Welcome To fti.uniska-bjm.ac.id',
+            'date' => date('m/d/Y'),
+            'kategoris' => $kategoris
+
+        ];
+        $pdf = PDF::loadview('kategoris.kategoripdf',$data);
+        $pdf->setPaper('A4','landscape');
+        return $pdf->stream('Data Kategori.pdf',array("attachment"=>false));
+    }
+
+    public function kategoriExcel()
+    {
+        $kategoris = Kategori::get();
+        $data = [
+            'title' => 'Data Kategori - Latihan Praktikum Web',
+            'date' => date('m/d/Y'),
+            'kategoris' => $kategoris
+
+        ];
+        return view('kategoris.kategoriexcel',$data);
     }
 }
